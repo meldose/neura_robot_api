@@ -16,7 +16,8 @@ from neurapy_ai.utils.types import ObjectWithPose
 from neurapy_ai.utils.types import Pose
 from neurapy_ai.utils.types import Pick
 import neurapy_ai.utils.ros_conversions as rc
-import rospy
+
+import rospy # imported rospy module
 from visualization_msgs.msg import MarkerArray, Marker
 
 from neurapy_ai_utils.robot.robot import Robot
@@ -25,13 +26,15 @@ from neurapy_ai_utils.robot.maira_kinematics import MairaKinematics
 
 robot = Robot(MairaKinematics())
 
+#created function for move joint
 def mj(js):
     robot.move_joint_to_joint(js, speed=50, acc=20)
 
-
+# created function for move linear
 def ml(pt):
     robot.move_linear(pt, 0.25, 0.1)
 
+# created function for publishing the pose
 
 def publish_pose(pose, title):
     print(title + "!!!!!!!!!")

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
-import rospy
-from typing import List, Tuple
+import rospy # imported rospy
+from typing import List, Tuple #imported Tuple
 from neura_ai_robot_api.clients.grasp_generator_client import (
     GraspGeneratorClient,
 )
@@ -13,6 +13,7 @@ from pose_estimation_ros_msgs.msg import DetectedObject as DetectedObjectMsg
 from geometry_msgs.msg import PoseStamped, Vector3
 from sensor_msgs.msg import PointCloud2, Image, CameraInfo
 
+# created class TestGraspGeneratorAPI
 
 class TestGraspGeneratorAPI:
     def __init__(self) -> None:
@@ -43,6 +44,8 @@ class TestGraspGeneratorAPI:
         ts.registerCallback(self._get_vision_data_callback)
         self.__vision_data_available = False
 
+# created function for test_start_detection
+
     def test_start_detection(
         self, grasp_generator_api: GraspGeneratorClient, object_names=[]
     ):
@@ -54,7 +57,9 @@ class TestGraspGeneratorAPI:
         )
 
         print(start_detection_return_code)
-    
+
+# created function for generating the grasp ros autonomous
+
     def test_generate_grasps_ros_autonomous(
         self, grasp_generator_api: GraspGeneratorClient, object_names=[]
     ):
@@ -131,7 +136,7 @@ class TestGraspGeneratorAPI:
 
         print(grasp_generator_api.get_picks())
 
-
+# created function for generating the grasps ros
 
     def test_generate_grasps_ros(
         self, grasp_generator_api: GraspGeneratorClient, object_names=[]
@@ -303,6 +308,7 @@ class TestGraspGeneratorAPI:
 
         print(grasp_generator_return_code)
 
+# created function for bin detection
     def bin_detection(
         self,
         bin_name: str = "",
@@ -392,6 +398,9 @@ class TestGraspGeneratorAPI:
         )
         return True, bin_pose, bin_bbox
 
+
+# created function for getting the vision data callback
+
     def _get_vision_data_callback(
         self, point_cloud_msg, rgb_image_msg, depth_image_msg, camera_info_msg
     ):
@@ -401,6 +410,7 @@ class TestGraspGeneratorAPI:
         self.camera_info_data = camera_info_msg
         self.__vision_data_available = True
 
+# calling the main function
 
 if __name__ == "__main__":
     # Initializes a rospy node so that the SimpleActionClient can publish and subscribe over ROS.

@@ -3,9 +3,9 @@ from neurapy_ai.clients.data_based_pick_client import (
 )
 from neurapy_ai.utils.types import ObjectWithPose
 from neurapy_ai.utils.types import Pose
-import rospy
+import rospy # imported rospy module
 
-
+# calling the main function
 if __name__ == "__main__":
     rospy.init_node("test_data_based_pick_client_node")
     workspace_name = "test_table"

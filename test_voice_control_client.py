@@ -4,9 +4,12 @@ Test the voice command client
 """
 
 from neurapy_ai.clients.voice_control_client import VoiceControlClient
-import rospy
-import time
+import rospy #imported rospy
+import time #imported time module
 
+
+# calling the main function
+ 
 if __name__ == "__main__":
     rospy.init_node("test_voice_control_clinet")
     _voice_control_client = VoiceControlClient()

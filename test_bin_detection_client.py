@@ -3,6 +3,7 @@ from neurapy_ai.utils.return_codes import ReturnCodes
 from neura_bin_detection_msgs.msg import MethodType
 import rospy
 
+# calling the main function
 if __name__ == "__main__":
     rospy.init_node("test_bin_detection_client_node")
     bdc_ = BinDetectionClient()

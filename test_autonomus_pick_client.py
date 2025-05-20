@@ -1,9 +1,9 @@
 from neurapy_ai.clients.autonomous_pick_client import (
     AutonomousPickClient,
 )
-import rospy
+import rospy # imported rospy modules
 
-
+# calling the main function
 if __name__ == "__main__":
     rospy.init_node("test_autonomous_pick_client_node")
 

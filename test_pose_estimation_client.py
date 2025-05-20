@@ -2,20 +2,20 @@
 """
 Test the psoe estimation client
 """
-import json
-from pathlib import Path
+import json # imported json
+from pathlib import Path # imported json
 
-import yaml
-import cv2
-import numpy as np
-import pytransform3d.rotations as ptr
-import pytransform3d.transformations as ptt
+import yaml # imprted yaml module
+import cv2 # imprted cv2 module
+import numpy as np # imprted numpy module
+import pytransform3d.rotations as ptr # imprted ptr module
+import pytransform3d.transformations as ptt # imprted ptt module
 
-import rospkg
-import rospy
-from cv_bridge import CvBridge
-from sensor_msgs.msg import Image, CameraInfo
-import tf
+import rospkg # imprted rospkg module
+import rospy # imprted rospy module
+from cv_bridge import CvBridge # imprted CvBridge module
+from sensor_msgs.msg import Image, CameraInfo # imprted Image,CameraInfo 
+import tf # imprted tf
 
 
 from cosypose_torch.datasets.object_info_dataset import ObjectInfoDataset
@@ -26,6 +26,7 @@ from neura_ai_robot_api.clients.pose_estimation_client import (
     PoseEstimationClient,
 )
 
+# created class TestDataPublisher
 
 class TestDataPublisher:
     def __init__(self, image, depth, base_to_cam, K=None):
@@ -57,6 +58,8 @@ class TestDataPublisher:
 
         rospy.Timer(rospy.Duration(1.0), self._publish)
 
+# created function for publishing
+
     def _publish(self, event):
         self.br.sendTransform(
             self.cam_tr,
@@ -68,6 +71,8 @@ class TestDataPublisher:
         self.im_pub.publish(self.image_msg)
         self.depth_pub.publish(self.depth_msg)
         self.cam_pub.publish(self.cam_msg)
+
+# created function for making camera info message
 
     def _make_camera_info_msg(self, image_shape, K):
         camera_info = CameraInfo()
@@ -97,6 +102,7 @@ class TestDataPublisher:
         camera_info.P = P
         return camera_info
 
+# created functionf for getting the load_gt
 
 def _load_gt(path, base_to_cam):
     if (path / "test_poses.json").exists():
@@ -141,6 +147,7 @@ def _load_gt(path, base_to_cam):
 
     return poses, K
 
+# created function for print result
 
 def print_result(result, return_code, gt_poses, mesh_db):
     print("Return code: ", return_code.value, return_code.message)
@@ -165,6 +172,7 @@ def print_result(result, return_code, gt_poses, mesh_db):
             f"| {conf_string} "
         )
 
+# created function for checking the result
 
 def _check_result(detected_objects, gt_poses, mesh_db):
     assign_indices = -1 * np.ones(len(detected_objects), dtype=np.uint8)
@@ -215,6 +223,7 @@ def _check_result(detected_objects, gt_poses, mesh_db):
 
     return assign_indices, translation_distances, rotation_distances, confs
 
+# created ufnction for loading the object infos
 
 def _load_object_infos(test_path):
     if (test_path / "models_info.json").exists():
@@ -243,6 +252,7 @@ def _load_object_infos(test_path):
             object_infos.append(ob)
         return MeshInfoDataBase(object_infos)
 
+# calling the main function
 
 if __name__ == "__main__":
     # read test data

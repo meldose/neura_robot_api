@@ -1,10 +1,12 @@
-import rospy
-import rospkg
-from pathlib import Path
+import rospy #imported rospy module
+import rospkg # imported rospkg
+from pathlib import Path # imported the path
 from neura_ai_robot_api.clients.planning_scene_client import PlanningSceneClient
 from neura_ai_robot_api.utils.types import SolidPrimitive
 from neurapy_ai.utils.types import Pose
-from sensor_msgs.msg import PointCloud2, Image
+from sensor_msgs.msg import PointCloud2, Imag
+
+# calling the main function
 
 if __name__ == "__main__" :
     rospy.init_node("test_planning_scene")

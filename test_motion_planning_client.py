@@ -1,11 +1,12 @@
-import rospy
-import math
+import rospy # imported rospy module
+import math # imported math 
 
 from neura_ai_robot_api.clients.motion_planning_client import MotionPlanningClient
 from neura_ai_robot_api.utils.types import SolidPrimitive
 from neurapy_ai.utils.types import Pose, JointState
 from sensor_msgs.msg import Image, PointCloud2
 
+# calliing the main function
 
 if __name__ == "__main__" :
     rospy.init_node("test_motion_planning")

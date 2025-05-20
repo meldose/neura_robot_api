@@ -4,15 +4,17 @@ Test the instance segmentation client
 """
 
 from neurapy_ai.clients import InstanceSegmentationClient
-import rospkg
-import rospy
+import rospkg # imported rospkg
+import rospy # imported rospy
 from cv_bridge import CvBridge
-from sensor_msgs.msg import Image
+from sensor_msgs.msg import Image # imported Image
 from pathlib import Path
-import yaml
-import cv2
-import numpy as np
+import yaml # imported yaml
+import cv2 #imoprted cv2 module
+import numpy as np # imported numpy
 
+
+# created function for displayign the resutl
 
 def display_result(instances, visualization, return_code, ground_truth):
     print("return code: ", return_code.value, return_code.message)
@@ -34,7 +36,7 @@ def display_result(instances, visualization, return_code, ground_truth):
     cv2.imshow("vis", visualization)
     cv2.waitKey(0)
 
-
+# created function for assigning the groung truth 
 def _assign_ground_truth(predicted, ground_truth):
     """
     Try to assign the best fitting ground truth annotation to each detected
@@ -73,6 +75,7 @@ def _assign_ground_truth(predicted, ground_truth):
 
     return assign_indices, ious
 
+# function for getting the iou
 
 def _get_iou(bb1, bb2):
     """
@@ -113,6 +116,7 @@ def _get_iou(bb1, bb2):
     assert iou <= 1.0
     return iou
 
+# created class TestImagePublisher
 
 class TestImagePublisher:
     def __init__(self, image):
@@ -127,6 +131,7 @@ class TestImagePublisher:
     def _publish_img(self, event):
         self.im_pub.publish(self.image_msg)
 
+# calling the main function
 
 if __name__ == "__main__":
     # read test data
