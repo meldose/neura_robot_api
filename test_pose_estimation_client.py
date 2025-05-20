@@ -37,12 +37,12 @@ class TestDataPublisher:
 
         self.depth_pub = rospy.Publisher(
             "/camera/aligned_depth_to_color/image_raw", Image, queue_size=1
-        )
+        ) # creatig the pubslisher for aligned depth to color/image raw
         self.cam_pub = rospy.Publisher(
             "/camera/aligned_depth_to_color/camera_info",
             CameraInfo,
             queue_size=1,
-        )
+        )# creatig the pubslisher for aligned depth to color/camera info 
         self.br = tf.TransformBroadcaster()
 
         self.target_frame = "/base"
@@ -68,10 +68,10 @@ class TestDataPublisher:
             "base",
             "camera_color_optical_frame",
         )
-        self.im_pub.publish(self.image_msg)
-        self.depth_pub.publish(self.depth_msg)
-        self.cam_pub.publish(self.cam_msg)
-
+        self.im_pub.publish(self.image_msg) # publishing the  cv2 to image passthrough
+        self.depth_pub.publish(self.depth_msg)# publishing the  cv2 to depth
+        self.cam_pub.publish(self.cam_msg)# publishing the camera info message
+ 
 # created function for making camera info message
 
     def _make_camera_info_msg(self, image_shape, K):
@@ -79,8 +79,8 @@ class TestDataPublisher:
         # store info without header
         camera_info.header.stamp = rospy.Time.now()
         camera_info.header.seq = 1
-        camera_info.width = image_shape[1]
-        camera_info.height = image_shape[0]
+        camera_info.width = image_shape[1] # setting up the image width
+        camera_info.height = image_shape[0]# setting up the image  height
 
         if K is None:
             K = [
@@ -110,13 +110,13 @@ def _load_gt(path, base_to_cam):
         poses = []
         for entry in gt_data:
             id = entry["obj_id"]
-            o2c_r = np.array(entry["cam_R_m2c"]).reshape(3, 3)
+            o2c_r = np.array(entry["cam_R_m2c"]).reshape(3, 3) # reshaping the image
             # positions are in mm but we want meter
             o2c_t = np.array(entry["cam_t_m2c"]) * 0.001
             o2c = ptt.transform_from(o2c_r, o2c_t)
 
             pose = np.dot(np.linalg.inv(base_to_cam), o2c)
-            poses.append({"id": id, "pose": pose, "name": entry["name"]})
+            poses.append({"id": id, "pose": pose, "name": entry["name"]}) # append the poses and getting the id ,pose and the name 
         K = np.array(
             [
                 919.0804443359375,
@@ -130,6 +130,7 @@ def _load_gt(path, base_to_cam):
                 1,
             ]
         )
+    # if the path exist
     elif (path / "ground_truth.yaml").exists():
         gt_data = yaml.load(
             (path / "ground_truth.yaml").open("r"), Loader=yaml.Loader
@@ -160,11 +161,11 @@ def print_result(result, return_code, gt_poses, mesh_db):
     )
     print("-" * 91)
     for ind, tr in enumerate(dists_tr):
-        class_str = "{:^19}".format(result[ind].object_with_pose.name)
+        class_str = "{:^19}".format(result[ind].object_with_pose.name) # setting up the class string
         ind_string = "{:^22}".format(
             gt_poses[assign[ind]]["name"] + "_" + str(assign[ind])
         )
-        tr_string = "{:^12}".format(str(np.round(tr, 3)))
+        tr_string = "{:^12}".format(str(np.round(tr, 3))) 
         rot_string = "{:^13}".format(str(np.round(dists_rot[ind], 3)))
         conf_string = "{:^10}".format(str(np.round(confs[ind], 1)))
         print(
@@ -175,10 +176,10 @@ def print_result(result, return_code, gt_poses, mesh_db):
 # created function for checking the result
 
 def _check_result(detected_objects, gt_poses, mesh_db):
-    assign_indices = -1 * np.ones(len(detected_objects), dtype=np.uint8)
-    rotation_distances = -1 * np.ones(len(detected_objects))
-    translation_distances = -1 * np.ones(len(detected_objects))
-    confs = -1 * np.ones(len(detected_objects))
+    assign_indices = -1 * np.ones(len(detected_objects), dtype=np.uint8) # createds and numopy array one
+    rotation_distances = -1 * np.ones(len(detected_objects)) # created an numpy array wiht ones multitplied with -1
+    translation_distances = -1 * np.ones(len(detected_objects)) # created an translation distances with numpy array of value 1 
+    confs = -1 * np.ones(len(detected_objects)) # created an numpy array with one
     for det_ind, o in enumerate(detected_objects):
         class_name = o.object_with_pose.name
         min_dist = 10000.0
@@ -212,13 +213,13 @@ def _check_result(detected_objects, gt_poses, mesh_db):
             tr = np.trace(R, axis1=1, axis2=2)
             # calculate the angle between the two matrices
             theta = (tr - 1) / 2.0
-            theta = np.arccos(np.clip(theta, -1, 1))
+            theta = np.arccos(np.clip(theta, -1, 1)) # getting the anglew betweent the two matrices
             theta = np.min(theta)
-
+          # if the dist_st is less than the min_dist
             if dist_tr < min_dist:
-                assign_indices[det_ind] = ind
-                rotation_distances[det_ind] = theta * 180 / np.pi
-                translation_distances[det_ind] = dist_tr * 1000
+                assign_indices[det_ind] = ind 
+                rotation_distances[det_ind] = theta * 180 / np.pi # setting the roation distances
+                translation_distances[det_ind] = dist_tr * 1000 # setting the translation distances
                 min_dist = dist_tr
 
     return assign_indices, translation_distances, rotation_distances, confs
@@ -226,6 +227,8 @@ def _check_result(detected_objects, gt_poses, mesh_db):
 # created ufnction for loading the object infos
 
 def _load_object_infos(test_path):
+
+    #if the path exist
     if (test_path / "models_info.json").exists():
         object_dataset = ObjectInfoDataset(test_path)
         return MeshInfoDataBase.from_object_dataset(object_dataset)
@@ -256,25 +259,25 @@ def _load_object_infos(test_path):
 
 if __name__ == "__main__":
     # read test data
-    rospy.init_node("test_pose_estimation")
+    rospy.init_node("test_pose_estimation") # initialise the node 
     rospack = rospkg.RosPack()
-    data_path = Path(rospack.get_path("pose_estimation_ros")) / "test"
+    data_path = Path(rospack.get_path("pose_estimation_ros")) / "test" # setting the data path
     test_image_path = data_path / "color_image.jpg"
-    image = cv2.imread(test_image_path.as_posix())[:, :, ::-1]
-    depth = cv2.imread(str(data_path / "depth_image.png"), cv2.IMREAD_UNCHANGED)
-    base_to_cam = np.eye(4)
+    image = cv2.imread(test_image_path.as_posix())[:, :, ::-1] # getting the image
+    depth = cv2.imread(str(data_path / "depth_image.png"), cv2.IMREAD_UNCHANGED) # getting the depth 
+    base_to_cam = np.eye(4) # numpy 4X4 array 
     ground_truth, K = _load_gt(data_path, base_to_cam)
-    K = K.reshape(3, 3)
+    K = K.reshape(3, 3) # reshaped the array to 3 x 3 array
     mesh_db = _load_object_infos(data_path)
 
     # start the clients
     client = PoseEstimationClient()
-    client.set_model("hrg_industrial")
-    segmentation_client = InstanceSegmentationClient()
+    client.set_model("hrg_industrial") # setting up the model
+    segmentation_client = InstanceSegmentationClient() # creating up the segmentation client 
     segmentation_client.set_model("hrg_industrial")
 
     # start a node to publish image data on the camera topic
-    publisher = TestDataPublisher(image, depth, base_to_cam, K)
+    publisher = TestDataPublisher(image, depth, base_to_cam, K) 
 
     print("test with scene from topic")
     return_code, detected_objects = client.get_poses(
