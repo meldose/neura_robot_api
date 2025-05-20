@@ -16,15 +16,17 @@ from sensor_msgs.msg import PointCloud2, Image, CameraInfo
 # created class TestGraspGeneratorAPI
 
 class TestGraspGeneratorAPI:
-    
+
     def __init__(self) -> None:
         # ************* init variables *************
         import message_filters
 
-        self.point_cloud_data = PointCloud2()
-        self.rgb_image_data = Image()
-        self.depth_image_data = Image()
-        self.camera_info_data = CameraInfo()
+        self.point_cloud_data = PointCloud2() # setting the pointcloud 
+        self.rgb_image_data = Image() #setting the image data
+        self.depth_image_data = Image() # setting up the image data
+        self.camera_info_data = CameraInfo() # setting the camera info 
+
+        #creating the subscribers fir poincloud, Image, and Camerainfo
         point_cloud_sub = message_filters.Subscriber(
             "/camera/depth_registered/points", PointCloud2
         )
@@ -64,7 +66,7 @@ class TestGraspGeneratorAPI:
     def test_generate_grasps_ros_autonomous(
         self, grasp_generator_api: GraspGeneratorClient, object_names=[]
     ):
-        import time
+        import time # importing the time module
 
         #####################################################################
         # raw vision data
@@ -253,7 +255,7 @@ class TestGraspGeneratorAPI:
             pose_estimation_return_code.message,
             len(detected_poses),
         )
-
+#  checking ig the detected pose is in the list of the detected_poses:
         for detected_pose in detected_poses:
             rospy.loginfo(
                 "[databased_grasp_generation][pose estimation data]:: class name %s and segmentation index %lu",

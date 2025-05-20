@@ -24,6 +24,9 @@ class TestGraspGeneratorAPI:
         self.rgb_image_data = Image()
         self.depth_image_data = Image()
         self.camera_info_data = CameraInfo()
+
+# creating different subscribers for PointCloud2 , Image and CameraInfo 
+
         point_cloud_sub = message_filters.Subscriber(
             "/camera/depth_registered/points", PointCloud2
         )
