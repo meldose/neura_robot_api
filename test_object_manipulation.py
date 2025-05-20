@@ -1,4 +1,4 @@
-from logging import debug
+from logging import debug # imported debug
 from neurapy_ai.clients.autonomous_pick_client import (
     AutonomousPickClient,
 )
@@ -18,7 +18,7 @@ from neurapy_ai.utils.types import Pick
 import neurapy_ai.utils.ros_conversions as rc
 
 import rospy # imported rospy module
-from visualization_msgs.msg import MarkerArray, Marker
+from visualization_msgs.msg import MarkerArray, Marker # imported Marker and MarkerArray
 
 from neurapy_ai_utils.robot.robot import Robot
 from neurapy_ai_utils.robot.maira_kinematics import MairaKinematics 
@@ -37,6 +37,7 @@ def ml(pt):
 # created function for publishing the pose
 
 def publish_pose(pose, title):
+
     print(title + "!!!!!!!!!")
     pose_msg = rc.pose_2_geometry_msg_pose(pose)
     debug_marker = Marker()
@@ -55,13 +56,13 @@ def publish_pose(pose, title):
     debug_marker.color.a = 0.6
     debug_marker.pose = pose_msg
     marker_array = MarkerArray()
-    marker_array.markers.append(debug_marker)
-    debug_pub.publish(marker_array)
+    marker_array.markers.append(debug_marker) # appending the marker array with Marker()
+    debug_pub.publish(marker_array) # publisht the marker array
     rospy.sleep(2)
     return
 
 
-rospy.init_node("test_node")
+rospy.init_node("test_node") # initalise the node 
 debug_pub = rospy.Publisher(
     "obj_manipulation_debug", MarkerArray, latch=True, queue_size=3
 )
@@ -91,7 +92,7 @@ print("###############")
 
 return_code = DP.start_detection(
     object_names, workspace_name, bin_name, gripper_name
-)
+) # setting up the detection wiht object names, workspace_name . bin_name adn gripper_name
 return_code, start_picks = DP.get_picks()
 
 
@@ -101,7 +102,7 @@ print(pick.object_with_pose.pose.orientation)
 print(pick.object_with_pose.pose.translation)
 # print("1",pick.object.pose.orientation, pick.object.pose.translation)
 # ObjectWithPose("puzzle_trapezoid", Pose([0.8619932598242034, -0.37368587671781706, 0.40071055084661766], [0.6460406389209613, -0.10671023975685137, 0.2159253522158627, 0.7243069551196386]))
-start_pose = pick.object
+start_pose = pick.object # start the pose 
 end_pose = ObjectWithPose(
     "puzzle_trapezoid",
     Pose(
@@ -115,7 +116,7 @@ end_pose = ObjectWithPose(
     ),
 )
 
-publish_pose(end_pose.pose, "end pose")
+publish_pose(end_pose.pose, "end pose") # publish the pose
 # object_names = []
 # object_with_pose = pick.object #ObjectWithPose("neura_rectangle", Pose([0.9787081236664715, -0.266239122690517, 0.40439299781940985], [0.2208869610988877, -0.03058147745805732, 0.08792362448160584, 0.9708466518935827]))
 # print(object_with_pose.pose.__dict__)
@@ -139,27 +140,31 @@ return_code, object_with_poses = SPG.get_poses()
 
 # Generate valid pick poses for stable poses
 picks_list = []
+
 for object_with_pose in object_with_poses:
     DP.start_detection_with_known_pose(
         object_with_pose, workspace_name, gripper_name
     )
     return_code, picks = DP.get_picks()
-    publish_pose(object_with_pose.pose, "stable pose")
-    picks_list.append(picks)
+    publish_pose(object_with_pose.pose, "stable pose") # publish the pose
+    picks_list.append(picks)  # attach the pick list with the empty list picks
 
 # DP.start_detection_with_known_pose(start_pose, workspace_name, gripper_name)
 # return_code, start_picks = DP.get_picks()
 print("start:")
+
 for pick in picks:
     print(pick.__dict__)
-DP.start_detection_with_known_pose(end_pose, workspace_name, gripper_name)
-return_code, end_picks = DP.get_picks()
+DP.start_detection_with_known_pose(end_pose, workspace_name, gripper_name) # starting the detection with the pose having endpose,workspace name and gripper name
+return_code, end_picks = DP.get_picks() # getting the pick ups and  end_picks
 print("end:")
 for pick in end_picks:
     print(pick.__dict__)
 
 OM = ObjectManipulationClient(picks_list)
 return_code, sequence = OM.get_manipulation_sequence(start_picks, end_picks)
+
+# setting up the poses
 for step in sequence.manipulation_steps:
     publish_pose(step.pick.object_with_pose.pose, "pick pose")
     print(step.__dict__)
