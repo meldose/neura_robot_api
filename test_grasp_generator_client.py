@@ -321,14 +321,12 @@ class TestGraspGeneratorAPI:
 
 # created function for getting the vsion data callback
 
-    def _get_vision_data_callback(
-        self, point_cloud_msg, rgb_image_msg, depth_image_msg, camera_info_msg
-    ):
-        self.point_cloud_data = point_cloud_msg
-        self.rgb_image_data = rgb_image_msg
-        self.depth_image_data = depth_image_msg
-        self.camera_info_data = camera_info_msg
-        self.__vision_data_available = True
+    def _get_vision_data_callback(self,point_cloud_msg,rgb_image_msg,depth_image_msg,camera_info_msg):
+        self.point_cloud_data=point_cloud_msg
+        self.rgb_image_data=rgb_image_msg
+        self.depth_image_data=depth_image_msg
+        self.camera_info_data=camera_info_msg
+        self.__vision_data_available=True
 
 # calling the main function
 

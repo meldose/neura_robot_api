@@ -27,6 +27,7 @@ if __name__ == "__main__":
             ],
         ),
     )
+    
     DP.start_detection_with_known_pose(pose, workspace_name, gripper_name)
     return_code, picks = DP.get_picks()
     print(f"Get return code: {return_code.value} , {return_code.message}")

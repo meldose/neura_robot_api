@@ -16,6 +16,7 @@ from sensor_msgs.msg import PointCloud2, Image, CameraInfo
 # created class TestGraspGeneratorAPI
 
 class TestGraspGeneratorAPI:
+    
     def __init__(self) -> None:
         # ************* init variables *************
         import message_filters
