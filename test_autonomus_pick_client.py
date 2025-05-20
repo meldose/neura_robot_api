@@ -5,17 +5,17 @@ import rospy # imported rospy modules
 
 # calling the main function
 if __name__ == "__main__":
-    rospy.init_node("test_autonomous_pick_client_node")
+    rospy.init_node("test_autonomous_pick_client_node") # initialise the node
 
     print("### test grasp detection with random pick ###")
     workspace_name = "test_table"
     bin_name = ""
     gripper_name = "RobotiQ"
     object_names = []
-    AP = AutonomousPickClient()
+    AP = AutonomousPickClient() # setting up the Autonomouse Pick client 
     return_code = AP.start_detection(
         object_names, workspace_name, bin_name, gripper_name
-    )
+    ) # returning the code with the object names, workspace , bin_name and gripper_name
     return_code, picks = AP.get_picks()
     print(f"Get return code: {return_code.value} , {return_code.message}")
     for pick in picks:
@@ -30,7 +30,7 @@ if __name__ == "__main__":
     AP = AutonomousPickClient()
     return_code = AP.start_detection(
         object_names, workspace_name, bin_name, gripper_name
-    )
+    ) # returning the code with the object names, workspace , bin_name and gripper_name
     return_code, picks = AP.get_picks()
     print(f"Get return code: {return_code.value} , {return_code.message}")
     for pick in picks:
