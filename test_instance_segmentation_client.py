@@ -14,7 +14,7 @@ import cv2 #imoprted cv2 module
 import numpy as np # imported numpy
 
 
-# created function for displayign the resutl
+# created function for displayign the result
 
 def display_result(instances, visualization, return_code, ground_truth):
     print("return code: ", return_code.value, return_code.message)
@@ -37,6 +37,7 @@ def display_result(instances, visualization, return_code, ground_truth):
     cv2.waitKey(0)
 
 # created function for assigning the groung truth 
+
 def _assign_ground_truth(predicted, ground_truth):
     """
     Try to assign the best fitting ground truth annotation to each detected
@@ -119,26 +120,28 @@ def _get_iou(bb1, bb2):
 # created class TestImagePublisher
 
 class TestImagePublisher:
+
     def __init__(self, image):
-        bridge = CvBridge()
-        self.image_msg = bridge.cv2_to_imgmsg(image, encoding="passthrough")
+
+        bridge = CvBridge() # created bridge
+        self.image_msg = bridge.cv2_to_imgmsg(image, encoding="passthrough") 
 
         self.im_pub = rospy.Publisher(
             "/camera/color/image_raw", Image, queue_size=1
-        )
+        ) # creating an publisher 
         rospy.Timer(rospy.Duration(1.0), self._publish_img)
 
-    def _publish_img(self, event):
+    def publish_img(self, event):
         self.im_pub.publish(self.image_msg)
 
 # calling the main function
 
 if __name__ == "__main__":
     # read test data
-    rospack = rospkg.RosPack()
-    data_path = Path(rospack.get_path("neura_instance_segmentation")) / "test"
-    test_image_path = data_path / "test_image.jpg"
-    ground_truth_path = data_path / "ground_truth.yaml"
+    rospack = rospkg.RosPack() # setting the rospackages
+    data_path = Path(rospack.get_path("neura_instance_segmentation")) / "test" # setting up the data path
+    test_image_path = data_path / "test_image.jpg" # setting the image path
+    ground_truth_path = data_path / "ground_truth.yaml" # setting up the ground truth path 
     image = cv2.imread(test_image_path.as_posix())[:, :, ::-1]
     with open(ground_truth_path, "r") as gt_file:
         ground_truth = yaml.load(gt_file, Loader=yaml.Loader)
