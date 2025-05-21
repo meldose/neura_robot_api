@@ -16,6 +16,7 @@ from sensor_msgs.msg import PointCloud2, Image, CameraInfo
 # created the class TestGraspGenerator API
 
 class TestGraspGeneratorAPI:
+
     def __init__(self) -> None:
         # ************* init variables *************
         import message_filters
@@ -75,8 +76,8 @@ class TestGraspGeneratorAPI:
         ):
             rospy.loginfo(
                 "[databased_grasp_generation]: waiting for vision data to be available"
-            )
-            time.sleep(0.1)
+            ) # rasing the logging error
+            time.sleep(0.1) # setting the time sleep
         if self.__vision_data_available == False:
             rospy.logerr(
                 "[databased_grasp_generation]: get vision data failed!"

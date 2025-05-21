@@ -93,7 +93,7 @@ def _get_iou(bb1, bb2):
         Intersection over union score in [0, 1]
     """
     # determine the coordinates of the intersection rectangle
-    x_left = max(bb1[0], bb2[0])
+    x_left = max(bb1[0], bb2[0]) 
     y_top = max(bb1[1], bb2[1])
     x_right = min(bb1[2], bb2[2])
     y_bottom = min(bb1[3], bb2[3])
@@ -137,41 +137,37 @@ class TestImagePublisher:
 
 # calling the main function
 
-if __name__ == "__main__":
-    # read test data
-    rospack = rospkg.RosPack() # setting the rospackages
-    data_path = Path(rospack.get_path("neura_instance_segmentation")) / "test" # setting up the data path
-    test_image_path = data_path / "test_image.jpg" # setting the image path
-    ground_truth_path = data_path / "ground_truth.yaml" # setting up the ground truth path 
-    image = cv2.imread(test_image_path.as_posix())[:, :, ::-1]
-    with open(ground_truth_path, "r") as gt_file:
-        ground_truth = yaml.load(gt_file, Loader=yaml.Loader)
+if __name__=="__main__":
 
-    # initialize a ros node
-    rospy.init_node("test_instance_segmentation_client", anonymous=True)
+    rospack=rospkg.RosPack() # setting up the rospackages
 
-    # start the client
-    client = InstanceSegmentationClient()
-    client.set_model("hrg_industrial")
+    data_path=Path(rospack.get_path("neura_segmentation"))/"test" # setting up the data path
+    test_image_path=data_path/"test_image.jpg" # settign up the image path
+    ground_truth_path=data_path/"ground_truth.yaml" # setting up the ground_path
+    image=cv2.imread(test_image_path,"r") # getting the image
+    with open(ground_truth_path,"r") as gt_file:
+        ground_truth=yaml.load(gt_file, Loader=yaml.Loader)
 
-    # start a node to publish image data on the camera topic
-    publisher = TestImagePublisher(image)
 
-    # test get_segmented_instances
-    print("test with image from topic")
-    return_code, instances, mask, input_image = client.get_segmented_instances()
-    visualization = client.visualize_segmentation_result(
-        input_image, instances, mask
-    )
-    display_result(instances, visualization, return_code, ground_truth)
+    rospy.init_node("test_instance_segmentaion_client",anonymous=True) # initialise the node 
 
-    # change the segmentation threshold
-    client.set_parameter("detection_threshold", 0.5)
+    client =InstanceSegmentationClient() # setting up the client 
+    client.set_model("hrg_industrial") # setting up the client model
 
-    # test get_segmented_instances_from_image
-    print("test with input image")
-    (return_code, instances, mask) = client.get_segmented_instances_from_image(
-        image
-    )
-    visualization = client.visualize_segmentation_result(image, instances, mask)
-    display_result(instances, visualization, return_code, ground_truth)
+    publisher=TestImagePublisher(image) # creating the publishre wiht the image 
+
+    print("testing with image from topic ")
+
+    return_code, instances,mask,input_image=client.get_segmented_instances()
+    visualization=client.visualize_segmentatio_result(input_image,instances,mask) # visualization with the result 
+
+    display_result(instances,visualization, return_code, ground_truth) # display the result 
+
+    client.set_parameter("detection_threshold",0.5) # setting up the client 
+
+    print("test with the input image")
+    (return_code,instances,mask)=client.get_segmented_instances_from_image(image)
+
+    visualization=client.visualize_segemntation_result(image,instances,mask) # creating the visualization
+    display_result(instances,visualization,return_code,ground_truth) # disaply the result 
+
