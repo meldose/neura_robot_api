@@ -53,10 +53,10 @@ class TestGraspGeneratorAPI:
         self, grasp_generator_api: GraspGeneratorClient, object_names=[]
     ):
         start_detection_return_code = grasp_generator_api.start_detection(
-            object_names=object_names,
-            workspace_name="workspace_2023",
-            bin_name="bin_ws_2023",
-            gripper_name="RobotiQ_140",
+            object_names=object_names, # setting up the object names
+            workspace_name="workspace_2023", # defining the workspace names 
+            bin_name="bin_ws_2023", # defining the bin name
+            gripper_name="RobotiQ_140", # definng the gripper name 
         )
 
         print(start_detection_return_code)
@@ -70,7 +70,7 @@ class TestGraspGeneratorAPI:
 
         #####################################################################
         # raw vision data
-        cur_time = time.time()
+        cur_time = time.time() 
         while (
             time.time() - cur_time < 10
             and self.__vision_data_available == False
@@ -135,7 +135,7 @@ class TestGraspGeneratorAPI:
             camera_link_to_root=PoseStamped(),
         )
 
-        print(grasp_generator_return_code)
+        print(grasp_generator_return_code) # printing the grasp_generator_return_code
 
         print(grasp_generator_api.get_picks())
 
@@ -267,24 +267,24 @@ class TestGraspGeneratorAPI:
             str(rospy.Time.now().to_sec() - pose_estimation_start_time),
         )
 
-        instance_ids = []
-        if len(object_names) == 0:
-            for detected_pose in detected_poses:
-                object_names.append(detected_pose.class_name)
+        instance_ids = [] # creating instance ids
+        if len(object_names) == 0: # if the lenght of the object names is zero then
+            for detected_pose in detected_poses: # checking the detected_pose in the list of the detected_poses
+                object_names.append(detected_pose.class_name) # attach the object names wiht the  detected poses
                 instance_ids.append(
                     detected_pose.class_name
                     + "_"
                     + str(detected_pose.segmentation_index)
                 )
 
-        print(object_names)
+        print(object_names) # print the object names 
 
-        bin_name = "workspace_2023"
+        bin_name = "workspace_2023" # defining the bin name
         bin_detection_success, bin_pose, bin_bbox = self.bin_detection(
             bin_name=bin_name, is_known_bin_pose=True
         )
-        print(bin_pose)
-        print(bin_bbox)
+        print(bin_pose) # print the bin pose 
+        print(bin_bbox) # print the bin bbox 
         confirm = input("Confirm")
 
         #####################################################################
@@ -317,17 +317,17 @@ class TestGraspGeneratorAPI:
         bin_name: str = "",
         is_known_bin_pose: bool = False,
     ) -> Tuple[bool, PoseStamped, Vector3]:
-        bin_detection_start_time = rospy.Time.now().to_sec()
-        rospy.loginfo("[bin_detection]: start bin detection")
+        bin_detection_start_time = rospy.Time.now().to_sec() # starting time for the bin detection
+        rospy.loginfo("[bin_detection]: start bin detection") # getting the log info
         need_bin_detection = True
 
-        bin_pose = PoseStamped()
-        bin_bbox = Vector3()
+        bin_pose = PoseStamped() # setting the bin pose
+        bin_bbox = Vector3() # setting the bin bbox
         if is_known_bin_pose and bin_name != "":
             from neurapy_ai.utils.return_codes import ReturnCodes
             from neurapy_ai.clients.database_client import DatabaseClient
 
-            database_client = DatabaseClient()
+            database_client = DatabaseClient() # setting the datbase client 
             database_return_code, bin_workspace = database_client.get_workspace(
                 workspace_name=bin_name
             )
@@ -336,16 +336,16 @@ class TestGraspGeneratorAPI:
                 pose_2_geometry_msg_pose,
             )
 
-            bin_pose.header.frame_id = bin_workspace.frame
-            bin_pose.header.stamp = rospy.Time.now()
-            bin_pose.pose = pose_2_geometry_msg_pose(bin_workspace.pose)
+            bin_pose.header.frame_id = bin_workspace.frame # setting up the frame_id
+            bin_pose.header.stamp = rospy.Time.now() # setting up the header stamp
+            bin_pose.pose = pose_2_geometry_msg_pose(bin_workspace.pose) 
 
             bin_bbox.x = bin_workspace.len_x
             bin_bbox.y = bin_workspace.len_y
             bin_bbox.z = bin_workspace.len_z
 
             # hack: change position in z axis
-            bin_pose.pose.position.z = 0.25
+            bin_pose.pose.position.z = 0.25 
 
             if (
                 need_bin_detection
@@ -359,7 +359,7 @@ class TestGraspGeneratorAPI:
                     BinDetectionManagerClient,
                 )
 
-                bin_detection_client = BinDetectionManagerClient()
+                bin_detection_client = BinDetectionManagerClient() # setting up the bin detection client 
                 (
                     bin_detection_return_code,
                     bin_detection_pose,
@@ -374,8 +374,8 @@ class TestGraspGeneratorAPI:
                         pose_2_geometry_msg_pose,
                     )
 
-                    bin_pose.header.frame_id = bin_workspace.frame
-                    bin_pose.header.stamp = rospy.Time.now()
+                    bin_pose.header.frame_id = bin_workspace.frame # setting up the bin workspace frame
+                    bin_pose.header.stamp = rospy.Time.now() # settin up the stamp time
                     bin_pose.pose = pose_2_geometry_msg_pose(
                         bin_detection_pose.pose
                     )
@@ -407,10 +407,10 @@ class TestGraspGeneratorAPI:
     def _get_vision_data_callback(
         self, point_cloud_msg, rgb_image_msg, depth_image_msg, camera_info_msg
     ):
-        self.point_cloud_data = point_cloud_msg
-        self.rgb_image_data = rgb_image_msg
-        self.depth_image_data = depth_image_msg
-        self.camera_info_data = camera_info_msg
+        self.point_cloud_data = point_cloud_msg # setting up the point cloud data
+        self.rgb_image_data = rgb_image_msg # setting up the rgb image data
+        self.depth_image_data = depth_image_msg # settin up the depth image data
+        self.camera_info_data = camera_info_msg # settin up the camera info data
         self.__vision_data_available = True
 
 # calling the main function
@@ -419,7 +419,7 @@ if __name__ == "__main__":
     # Initializes a rospy node so that the SimpleActionClient can publish and subscribe over ROS.
     rospy.init_node("test_generate_grasp_client_api")
 
-    grasp_generator_api = GraspGeneratorClient()
+    grasp_generator_api = GraspGeneratorClient() # setting up the grasp generator api
     rospy.sleep(5.0)
 
     test_grasp_generator_api = TestGraspGeneratorAPI()
@@ -431,5 +431,5 @@ if __name__ == "__main__":
     # )
     test_grasp_generator_api.test_generate_grasps_ros_autonomous(
         grasp_generator_api=grasp_generator_api, object_names=[]
-    )
+    ) # calling the function for testing up the grasps ros autonomous
     
