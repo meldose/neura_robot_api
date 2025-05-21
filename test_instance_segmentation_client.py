@@ -14,7 +14,7 @@ import cv2 #imoprted cv2 module
 import numpy as np # imported numpy
 
 
-# created function for displayign the result
+# created function for displaying the result
 
 def display_result(instances, visualization, return_code, ground_truth):
     print("return code: ", return_code.value, return_code.message)
@@ -33,8 +33,8 @@ def display_result(instances, visualization, return_code, ground_truth):
         iou_string = "{:^9}".format(str(np.round(iou, 3)))
         print(f" {class_str} | {ind_string} | {iou_string}")
 
-    cv2.imshow("vis", visualization)
-    cv2.waitKey(0)
+    cv2.imshow("vis", visualization) # getting the visualisation
+    cv2.waitKey(0) # close the window by pressing the key
 
 # created function for assigning the groung truth 
 
@@ -47,7 +47,7 @@ def _assign_ground_truth(predicted, ground_truth):
     ious = np.zeros((len(predicted)), dtype=np.float32)
 
     for det_ind, instance in enumerate(predicted):
-        class_name = instance.class_name
+        class_name = instance.class_name # defining the class name 
         max_iou = 0
 
         bb = [
@@ -61,7 +61,7 @@ def _assign_ground_truth(predicted, ground_truth):
             if class_name != gt["name"]:
                 continue
 
-            # claculate iou
+            # calculate iou
             bb_gt = [
                 gt["bb"][0],
                 gt["bb"][1],
@@ -72,7 +72,7 @@ def _assign_ground_truth(predicted, ground_truth):
             if iou > max_iou:
                 assign_indices[det_ind] = ind
                 ious[det_ind] = iou
-                max_iou = iou
+                max_iou = iou 
 
     return assign_indices, ious
 
@@ -130,7 +130,8 @@ class TestImagePublisher:
             "/camera/color/image_raw", Image, queue_size=1
         ) # creating an publisher 
         rospy.Timer(rospy.Duration(1.0), self._publish_img)
-
+        
+# publising the image msg
     def publish_img(self, event):
         self.im_pub.publish(self.image_msg)
 
