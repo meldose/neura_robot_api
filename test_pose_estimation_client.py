@@ -102,7 +102,7 @@ class TestDataPublisher:
         camera_info.P = P
         return camera_info
 
-# created functionf for getting the load_gt
+# created function for getting the load_gt
 
 def _load_gt(path, base_to_cam):
     if (path / "test_poses.json").exists():
@@ -192,10 +192,10 @@ def _check_result(detected_objects, gt_poses, mesh_db):
         for ind, gt in enumerate(gt_poses):
             if class_name != gt["name"]:
                 continue
-            # claculate translation distance
+            # calculate translation distance
             dist_tr = np.linalg.norm(pos - gt["pose"][:3, 3])
 
-            # claculate rotation distance
+            # calculate rotation distance
             # get symmetries
             if class_name in mesh_db.symmetries:
                 symmetries = mesh_db.symmetries[class_name]
@@ -206,6 +206,7 @@ def _check_result(detected_objects, gt_poses, mesh_db):
                 np.expand_dims(gt["pose"], 0), [symmetries.shape[0], 1, 1]
             )
             gt_pose = np.matmul(gt_pose, symmetries)
+
             R = np.matmul(
                 np.tile(np.expand_dims(rot, 0), [symmetries.shape[0], 1, 1]),
                 np.transpose(gt_pose[:, :3, :3], axes=[0, 2, 1]),
@@ -215,7 +216,7 @@ def _check_result(detected_objects, gt_poses, mesh_db):
             theta = (tr - 1) / 2.0
             theta = np.arccos(np.clip(theta, -1, 1)) # getting the anglew betweent the two matrices
             theta = np.min(theta)
-          # if the dist_st is less than the min_dist
+          # if the dist_tr is less than the min_dist
             if dist_tr < min_dist:
                 assign_indices[det_ind] = ind 
                 rotation_distances[det_ind] = theta * 180 / np.pi # setting the roation distances
@@ -224,7 +225,7 @@ def _check_result(detected_objects, gt_poses, mesh_db):
 
     return assign_indices, translation_distances, rotation_distances, confs
 
-# created ufnction for loading the object infos
+# created function for loading the object infos
 
 def _load_object_infos(test_path):
 
