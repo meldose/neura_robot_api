@@ -109,11 +109,8 @@ class TestGraspGeneratorAPI:
         rospy.loginfo(
             "[instance segmentation data]: start instance segmentation"
         )
-
-        from neurapy_ai.clients.instance_segmentation_client import (
-            InstanceSegmentationClient,
-        )
-
+        from neurapy_ai.clients.instance_segementation_client import(InstanceSegmentationClient)
+        
         instance_seg_client = InstanceSegmentationClient(
             model_name="tower_building", model_version="v_6"
         )
@@ -155,7 +152,6 @@ class TestGraspGeneratorAPI:
         from neura_ai_robot_api.clients.pose_estimation_client import (
             PoseEstimationClient,
         )
-
         pose_estimation_client = PoseEstimationClient()
         (
             pose_estimation_return_code,

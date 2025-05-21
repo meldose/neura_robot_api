@@ -95,7 +95,6 @@ return_code = DP.start_detection(
 ) # setting up the detection wiht object names, workspace_name . bin_name adn gripper_name
 return_code, start_picks = DP.get_picks()
 
-
 pick = start_picks[0]
 print("pick:!!!!!!!!!")
 print(pick.object_with_pose.pose.orientation)
@@ -133,8 +132,6 @@ object_pose = Pose(
 )
 publish_pose(object_pose, "manipulation pose")
 
-# "puzzle_trapezoid"
-# "puzzle_trapezoid"
 SPG.start_calculation("puzzle_trapezoid", object_pose, 1)
 return_code, object_with_poses = SPG.get_poses()
 
