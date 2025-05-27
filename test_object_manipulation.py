@@ -70,7 +70,6 @@ mesh_path = (
     "file:///home/neura_ai/data/objects/puzzle_trapezoid/puzzle_trapezoid.stl"
 )
 
-
 workspace_name = "test_table"
 bin_name = ""
 gripper_name = "RobotiQ"

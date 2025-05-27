@@ -65,7 +65,7 @@ class TestGraspGeneratorAPI:
     def test_generate_grasps_ros(
         self, grasp_generator_api: GraspGeneratorClient, object_names=[]
     ):
-        import time
+        import time # importing the time module 
 
         #####################################################################
         # raw vision data
@@ -78,6 +78,7 @@ class TestGraspGeneratorAPI:
                 "[databased_grasp_generation]: waiting for vision data to be available"
             ) # rasing the logging error
             time.sleep(0.1) # setting the time sleep
+
         if self.__vision_data_available == False:
             rospy.logerr(
                 "[databased_grasp_generation]: get vision data failed!"
@@ -110,7 +111,7 @@ class TestGraspGeneratorAPI:
             "[instance segmentation data]: start instance segmentation"
         )
         from neurapy_ai.clients.instance_segementation_client import(InstanceSegmentationClient)
-        
+
         instance_seg_client = InstanceSegmentationClient(
             model_name="tower_building", model_version="v_6"
         )
@@ -124,34 +125,28 @@ class TestGraspGeneratorAPI:
         )
 
         class_instance_indexes = []
+
         for seg_instance in segmented_instances:
-            # class_instance_indexes.append(seg_instance.class_instance_index)
-            # rospy.loginfo("[databased_grasp_generation][instance segmentation data]: segmented class name %s and index: %lu", seg_instance.class_name, seg_instance.class_instance_index)
+          
             class_instance_indexes.append(seg_instance.segmentation_index)
             rospy.loginfo(
                 "[databased_grasp_generation][instance segmentation data]: segmented class name %s and index: %lu",
                 seg_instance.class_name,
                 seg_instance.segmentation_index,
             )
-
-        rospy.logwarn(
-            "[databased_grasp_generation][instance segmentation data]: instance segmentation tooks %s sec.",
-            str(rospy.Time.now().to_sec() - instance_seg_start_time),
-        )
-        # confirm = input(
-        #     "[databased_grasp_generation][instance segmentation data] confirm execution..."
-        # )
+        rospy.logwarn("[databased_grasp_generation][instance segmentation data]: instance segmentation tooks %s sec",
+        str(rospy.Time.now().to_sec()- instance_seg_start_time),)
 
         #####################################################################
         # ************** pose estimation data **************
-        pose_estimation_start_time = rospy.Time.now().to_sec()
+        pose_estimation_start_time = rospy.Time.now().to_sec() # setting up the start time 
         rospy.loginfo(
             "[databased_grasp_generation][pose estimation data]: start pose estimation."
         )
-        from pose_estimation_ros_msgs.msg import DetectedObject
-        from neura_ai_robot_api.clients.pose_estimation_client import (
-            PoseEstimationClient,
-        )
+
+        from pose_estimation_ros_msgs.msg import DetectionObject
+        from neurapy_ai_robot_ai.clients.pose_estimation_client import(PoseEstimationClient)
+        
         pose_estimation_client = PoseEstimationClient()
         (
             pose_estimation_return_code,
@@ -195,7 +190,6 @@ class TestGraspGeneratorAPI:
                 )
 
         print(object_names)
-
         bin_name = "workspace_2023"
         bin_detection_success, bin_pose, bin_bbox = self.bin_detection(
             bin_name=bin_name, is_known_bin_pose=True
@@ -203,6 +197,7 @@ class TestGraspGeneratorAPI:
         print(bin_pose)
         print(bin_bbox)
         confirm = input("Confirm")
+        print(confirm)
 
         #####################################################################
         # ************** Call function with correct parameters **************
@@ -242,21 +237,18 @@ class TestGraspGeneratorAPI:
         bin_pose = PoseStamped()
         bin_bbox = Vector3()
         if is_known_bin_pose and bin_name != "":
-            from neurapy_ai.utils.return_codes import ReturnCodes
-            from neurapy_ai.clients.database_client import DatabaseClient
 
+            from neurapy_ai.utils.return_code import ReturnCodes
+            from neurapy_ai.utils.database_client import DatabaseClient
             database_client = DatabaseClient()
             database_return_code, bin_workspace = database_client.get_workspace(
                 workspace_name=bin_name
             )
+            from neurapy_ai.utils.ros_conversions import(pose_2_geometry_msg_pose)
 
-            from neurapy_ai.utils.ros_conversions import (
-                pose_2_geometry_msg_pose,
-            )
-
-            bin_pose.header.frame_id = bin_workspace.frame
-            bin_pose.header.stamp = rospy.Time.now()
-            bin_pose.pose = pose_2_geometry_msg_pose(bin_workspace.pose)
+            bin_pose.header.frame_id = bin_workspace.frame # settig up the frame _id 
+            bin_pose.header.stamp = rospy.Time.now() # setting up the stamp time 
+            bin_pose.pose = pose_2_geometry_msg_pose(bin_workspace.pose) # creating the msg pose 
 
             bin_bbox.x = bin_workspace.len_x
             bin_bbox.y = bin_workspace.len_y
@@ -282,18 +274,16 @@ class TestGraspGeneratorAPI:
                     bin_detection_return_code,
                     bin_detection_pose,
                 ) = bin_detection_client.get_bin_pose(bin_name=bin_name)
+                
                 if bin_detection_return_code.value == ReturnCodes.SUCCESS:
                     rospy.loginfo(
                         "[bin_detection]: get bin workspace sucessful. message: %s",
                         bin_detection_return_code.message,
                     )
+                    from neurapy_ai.utils.ros_conversions import(pose_2_geometry_msg_pose)
 
-                    from neurapy_ai.utils.ros_conversions import (
-                        pose_2_geometry_msg_pose,
-                    )
-
-                    bin_pose.header.frame_id = bin_workspace.frame
-                    bin_pose.header.stamp = rospy.Time.now()
+                    bin_pose.header.frame_id = bin_workspace.frame # setting up the frame id 
+                    bin_pose.header.stamp = rospy.Time.now() # setting up the header stamp
                     bin_pose.pose = pose_2_geometry_msg_pose(
                         bin_detection_pose.pose
                     )
@@ -319,6 +309,7 @@ class TestGraspGeneratorAPI:
         )
         return True, bin_pose, bin_bbox
 
+
 # created function for getting the vsion data callback
 
     def _get_vision_data_callback(self,point_cloud_msg,rgb_image_msg,depth_image_msg,camera_info_msg):
@@ -338,9 +329,7 @@ if __name__ == "__main__":
     rospy.sleep(5.0)
 
     test_grasp_generator_api = TestGraspGeneratorAPI()
-    # test_grasp_generator_api.test_start_detection(
-    #    grasp_generator_api=grasp_generator_api, object_names=[]
-    # )
+
     test_grasp_generator_api.test_generate_grasps_ros(
         grasp_generator_api=grasp_generator_api, object_names=[]
     )

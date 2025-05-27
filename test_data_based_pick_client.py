@@ -7,7 +7,9 @@ import rospy # imported rospy module
 
 # calling the main function
 if __name__ == "__main__":
-    rospy.init_node("test_data_based_pick_client_node")
+    rospy.init_node("test_data_based_pick_client_node") # intialise the node
+
+# creating the reuired the work space, bin_name, gripper name and object names 
     workspace_name = "test_table"
     bin_name = ""
     gripper_name = "RobotiQ"
@@ -31,6 +33,7 @@ if __name__ == "__main__":
     DP.start_detection_with_known_pose(pose, workspace_name, gripper_name)
     return_code, picks = DP.get_picks() # getting the start detection with known pose
     print(f"Get return code: {return_code.value} , {return_code.message}")
+
     for pick in picks:
         print(
             f"Get pick: \n  grasp_id: {pick.grasp_id},\n  pre pose: "
@@ -40,9 +43,7 @@ if __name__ == "__main__":
         )
 
     print("### test grasp detection ###")
-    return_code = DP.start_detection(
-        object_names, workspace_name, bin_name, gripper_name
-    ) # getting the start detection with known pose
+    return_code=DP.start_detection(object_names,workspace_name,bin_name,gripper_name)
     return_code, picks = DP.get_picks()
     print(f"Get return code: {return_code.value} , {return_code.message}")
     for pick in picks:
